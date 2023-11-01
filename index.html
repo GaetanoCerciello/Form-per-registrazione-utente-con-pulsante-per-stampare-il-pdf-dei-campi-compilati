@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/jspdf-autotable@3.7.1/dist/jspdf.plugin.autotable.js"></script>
+</head>
+
+<body>
+    <form id="pdfForm">
+        <!-- Campi del form -->
+        <label for="name">Nome:</label>
+        <input type="text" id="name" name="name" value="Gaetano Cerciello" /><br />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="gaetanocerciello@accenture.com" /><br />
+
+        <label>Genere:</label>
+        <input type="radio" id="male" name="gender" value="Maschio" checked />
+        <label for="male">Maschio</label>
+        <input type="radio" id="female" name="gender" value="Femmina" />
+        <label for="female">Femmina</label><br />
+
+        <label>Interessi:</label>
+        <input type="checkbox" id="sports" name="interests" value="Sport" checked />
+        <label for="sports">Pugilato</label>
+        <input type="checkbox" id="music" name="interests" value="Musica" />
+        <label for="music">Musica</label>
+
+        <!-- Bottone che genera il pdf -->
+        <div class="container">
+            <input type="button" id="generatePdf" onclick="downloadpdf()" value="create pdf" />
+        </div>
+    </form>
+
+    <script type="text/javascript">
+
+        function downloadpdf() {
+            const { jsPDF } = window.jspdf;
+            // Crea un nuovo documento PDF
+            const doc = new jsPDF();
+
+            // Raccogli i dati dai campi del modulo
+            var formData = {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                gender: document.querySelector('input[name="gender"]:checked').value,
+                interests: Array.from(
+                    document.querySelectorAll('input[name="interests"]:checked')
+                )
+                    .map((input) => input.value)
+                    .join(", "),
+            };
+
+            // Crea un array con i dati del modulo
+            var tableData = [
+                ['Campo', 'Valore'],
+                ['Nome', formData.name],
+                ['Email', formData.email],
+                ['Genere', formData.gender],
+                ['Interessi', formData.interests],
+            ];
+
+            // Crea la tabella nel PDF
+            doc.autoTable({
+                head: [tableData[0]],
+                body: tableData.slice(1),
+            });
+
+            // Salva il documento come file PDF
+            doc.save("modulo.pdf");
+
+
+
+
+
+
+            // Raccogli i dati dai campi del modulo
+            /*var formData = {
+              name: document.getElementById("name").value,
+              email: document.getElementById("email").value,
+              gender: document.querySelector('input[name="gender"]:checked').value,
+              interests: Array.from(
+                document.querySelectorAll('input[name="interests"]:checked')
+              )
+                .map((input) => input.value)
+                .join(", "),
+            };
+    
+            // Aggiungi i dati al documento PDF
+            doc.text("Dati del Modulo", 10, 10);
+            doc.text(`Nome: ${formData.name}`, 10, 20);
+            doc.text(`Email: ${formData.email}`, 10, 30);
+            doc.text(`Genere: ${formData.gender}`, 10, 40);
+            doc.text(`Interessi: ${formData.interests}`, 10, 50);
+    
+            // Crea la tabella nel PDF
+            //doc.autoTable(doc);
+            // Salva il documento come file PDF
+            doc.save("modulo.pdf");
+            */
+        }
+    </script>
+</body>
+
+</html>
